@@ -1,102 +1,100 @@
 using CRUD_application_2.Models;
-using System.Linq;
 using System.Web.Mvc;
- 
-namespace CRUD_application_2.Controllers
+
+public class UserController : Controller
 {
-    public class UserController : Controller
+    private readonly IUserRepository userRepository;
+
+    public UserController(IUserRepository userRepository)
     {
-        public static System.Collections.Generic.List<User> userlist = new System.Collections.Generic.List<User>();
-        // GET: User
-        public ActionResult Index()
+        this.userRepository = userRepository;
+    }
+
+    // GET: User
+    public ActionResult Index()
+    {
+        var users = userRepository.GetUsers();
+        return View(users);
+    }
+
+    // GET: User/Details/5
+    public ActionResult Details(int id)
+    {
+        var user = userRepository.GetUser(id);
+        if (user == null)
         {
-            return View(userlist);
+            return HttpNotFound();
         }
+        return View(user);
+    }
 
-        // GET: User/Details/5
-        public ActionResult Details(int id)
+    // GET: User/Create
+    public ActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Create(User user)
+    {
+        if (ModelState.IsValid)
         {
-            var user = userlist.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
+            userRepository.AddUser(user);
+            return RedirectToAction("Index");
         }
+        return View(user);
+    }
 
-        // GET: User/Create
-        public ActionResult Create()
+    // GET: User/Edit/5
+    public ActionResult Edit(int id)
+    {
+        var user = userRepository.GetUser(id);
+        if (user == null)
         {
-            return View();
+            return HttpNotFound();
         }
+        return View(user);
+    }
 
-        [HttpPost]
-        public ActionResult Create(User user)
+    // POST: User/Edit/5
+    [HttpPost]
+    public ActionResult Edit(int id, User user)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
-            {
-                // Assign a unique ID to the new user
-                int maxId = userlist.Any() ? userlist.Max(u => u.Id) : 0;
-                user.Id = maxId + 1;
-
-                userlist.Add(user);
-                return RedirectToAction("Index");
-            }
-            return View(user);
-        }
-
-
-        // GET: User/Edit/5
-        public ActionResult Edit(int id)
-        {
-            var user = userlist.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
-        }
-
-        // POST: User/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, User user)
-        {
-            var existingUser = userlist.FirstOrDefault(u => u.Id == id);
+            var existingUser = userRepository.GetUser(id);
             if (existingUser == null)
             {
                 return HttpNotFound();
             }
-            if (ModelState.IsValid)
-            {
-                existingUser.Name = user.Name;
-                // Update other properties here
-                return RedirectToAction("Index");
-            }
-            return View(user);
-        }
-
-        // GET: User/Delete/5
-        public ActionResult Delete(int id)
-        {
-            var user = userlist.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
-        }
-
-        // POST: User/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            var user = userlist.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            userlist.Remove(user);
+            userRepository.UpdateUser(user);
             return RedirectToAction("Index");
         }
+        return View(user);
+    }
+
+
+    // GET: User/Delete/5
+    public ActionResult Delete(int id)
+    {
+        var user = userRepository.GetUser(id);
+        if (user == null)
+        {
+            return HttpNotFound();
+        }
+        return View(user);
+    }
+
+    // POST: User/Delete/5
+    [HttpPost]
+    public ActionResult Delete(int id, FormCollection collection)
+    {
+        var user = userRepository.GetUser(id);
+        if (user == null)
+        {
+            return HttpNotFound();
+        }
+        userRepository.DeleteUser(id);
+        return RedirectToAction("Index");
     }
 }
