@@ -1,31 +1,37 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "appName": {
-            "type": "string"
-        },
-        "location": {
-            "type": "string"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Web app name"
+      }
     },
-    "resources": [
-        {
-            "type": "Microsoft.Web/sites",
-            "apiVersion": "2016-08-01",
-            "name": "[parameters('appName')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "name": "[parameters('appName')]",
-                "siteConfig": {},
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appName'))]"
-            }
-        }
-    ],
-    "outputs": {
-        "webAppUrl": {
-            "type": "string",
-            "value": "[concat('http://', parameters('appName'), '.azurewebsites.net')]"
-        }
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for all resources"
+      }
     }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('webAppName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "name": "[parameters('webAppName')]",
+        "siteConfig": {},
+        "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('webAppName'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "webAppUrl": {
+      "type": "string",
+      "value": "[concat('https://', parameters('webAppName'), '.azurewebsites.net')]"
+    }
+  }
 }
