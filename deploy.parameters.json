@@ -2,17 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "appName": {
-        "value": "YourAppName"
-      },
-      "appServicePlanName": {
-        "value": "YourAppServicePlanName"
-      },
-      "appSettings": {
-        "value": {
-          "setting1": "value1",
-          "setting2": "value2"
+        "appName": {
+            "value": "your-app-name"
+        },
+        "location": {
+            "value": "West US"
         }
-      }
     }
-  }
+}

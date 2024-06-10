@@ -1,57 +1,31 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "appName": {
-            "type": "string",
-            "metadata": {
-                "description": "Contact Database"
-            }
+            "type": "string"
         },
-        "appServicePlanName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the app service plan."
-            }
-        },
-        "appSettings": {
-            "type": "object",
-            "metadata": {
-                "description": "The app settings for the app."
-            }
+        "location": {
+            "type": "string"
         }
     },
     "resources": [
         {
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2021-02-01",
+            "apiVersion": "2016-08-01",
             "name": "[parameters('appName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-                "siteConfig": {
-                    "appSettings": "[parameters('appSettings')]"
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2021-02-01",
-            "name": "[parameters('appServicePlanName')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "F1",
-                "tier": "Free",
-                "size": "F1",
-                "family": "F",
-                "capacity": 1
-            },
-            "properties": {
-                "name": "[parameters('appServicePlanName')]"
+                "name": "[parameters('appName')]",
+                "siteConfig": {},
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appName'))]"
             }
         }
-    ]
+    ],
+    "outputs": {
+        "webAppUrl": {
+            "type": "string",
+            "value": "[concat('http://', parameters('appName'), '.azurewebsites.net')]"
+        }
+    }
 }
