@@ -1,12 +1,18 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "webAppName": {
-      "value": "CRUDApplication2"
-    },
-    "location": {
-      "value": "West US"
-    }
+      "webAppName": {
+          "value": "Contact-Database-Application"
+      },
+      "hostingPlanName": {
+          "value": "MyWebAppPlan"
+      },
+      "location": {
+          "value": "West US 2"
+      },
+      "resourceGroupName": {
+          "value": "GitHub-Copilot-Challenges"
+      }
   }
 }
